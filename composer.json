@@ -13,7 +13,9 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=5.5.0",
-        "phwoolcon/phwoolcon": "~1.0"
+        "phwoolcon/phwoolcon": "~1.0",
+        "phwoolcon/auth": "dev-master",
+        "phwoolcon/payment": "~1.0"
     },
     "require-dev": {
         "techpivot/phalcon-ci-installer": "~1.0"
