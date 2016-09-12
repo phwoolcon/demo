@@ -3,7 +3,7 @@
 
 $this->prefix('/api', [
     'GET' => [
-        '/:params' => 'Payment\Controllers\Api\AlipayController::missingMethod',
+        '/:params' => 'Phwoolcon\Demo\Payment\Controllers\Api\AlipayController::missingMethod',
         '/' => function () {
             return Phalcon\Di::getDefault()
                 ->getShared('response')
@@ -12,53 +12,53 @@ $this->prefix('/api', [
         },
     ],
     'POST' => [
-        '/alipay/pay-request' => 'Payment\Controllers\Api\AlipayController::postRequest',
+        '/alipay/pay-request' => 'Phwoolcon\Demo\Payment\Controllers\Api\AlipayController::postRequest',
     ],
 ], MultiFilter::instance()
     ->add(DisableSessionFilter::instance())
     ->add(DisableCsrfFilter::instance())
 )->prefix('/admin', [
     'GET' => [
-        '/:params' => 'Admin\Controllers\AccountController::missingMethod',
-        '/' => 'Admin\Controllers\AccountController::getIndex',
-        '/login' => 'Admin\Controllers\AccountController::getLogin',
+        '/:params' => 'Phwoolcon\Demo\Admin\Controllers\AccountController::missingMethod',
+        '/' => 'Phwoolcon\Demo\Admin\Controllers\AccountController::getIndex',
+        '/login' => 'Phwoolcon\Demo\Admin\Controllers\AccountController::getLogin',
     ],
     'POST' => [
-        '/login' => 'Admin\Controllers\AccountController::postLogin',
+        '/login' => 'Phwoolcon\Demo\Admin\Controllers\AccountController::postLogin',
     ],
 ])->prefix('/account', [
     'GET' => [
-        '/' => 'Auth\Controllers\AccountController::getIndex',
-        '/login' => 'Auth\Controllers\AccountController::getLogin',
-        '/register' => 'Auth\Controllers\AccountController::getRegister',
-        '/logout' => 'Auth\Controllers\AccountController::getLogout',
-        '/confirm' => 'Auth\Controllers\AccountController::getConfirm',
-        '/activate' => 'Auth\Controllers\AccountController::getActivate',
-        '/forgot-password' => 'Auth\Controllers\AccountController::getForgotPassword',
+        '/' => 'Phwoolcon\Demo\Auth\Controllers\AccountController::getIndex',
+        '/login' => 'Phwoolcon\Demo\Auth\Controllers\AccountController::getLogin',
+        '/register' => 'Phwoolcon\Demo\Auth\Controllers\AccountController::getRegister',
+        '/logout' => 'Phwoolcon\Demo\Auth\Controllers\AccountController::getLogout',
+        '/confirm' => 'Phwoolcon\Demo\Auth\Controllers\AccountController::getConfirm',
+        '/activate' => 'Phwoolcon\Demo\Auth\Controllers\AccountController::getActivate',
+        '/forgot-password' => 'Phwoolcon\Demo\Auth\Controllers\AccountController::getForgotPassword',
     ],
     'POST' => [
-        '/login' => 'Auth\Controllers\AccountController::postLogin',
-        '/register' => 'Auth\Controllers\AccountController::postRegister',
-        '/forgot-password' => 'Auth\Controllers\AccountController::postForgotPassword',
+        '/login' => 'Phwoolcon\Demo\Auth\Controllers\AccountController::postLogin',
+        '/register' => 'Phwoolcon\Demo\Auth\Controllers\AccountController::postRegister',
+        '/forgot-password' => 'Phwoolcon\Demo\Auth\Controllers\AccountController::postForgotPassword',
     ],
 ])->prefix('/sso', [
     'GET' => [
-        '/check' => 'Auth\Controllers\SsoController::getCheckIframe',
-        '/redirect' => 'Auth\Controllers\SsoController::getRedirect',
+        '/check' => 'Phwoolcon\Demo\Auth\Controllers\SsoController::getCheckIframe',
+        '/redirect' => 'Phwoolcon\Demo\Auth\Controllers\SsoController::getRedirect',
     ],
     'POST' => [
         '/server-check' => [
-            'Auth\Controllers\SsoController::postServerCheck',
+            'Phwoolcon\Demo\Auth\Controllers\SsoController::postServerCheck',
             'filter' => DisableCsrfFilter::instance(),
         ],
     ],
 ])->prefix('/pay', [
     'GET' => [
-        '/form' => 'Payment\Controllers\OrderController::getForm',
-        '/demo-request-form' => 'Payment\Controllers\OrderController::getDemoRequestForm',
+        '/form' => 'Phwoolcon\Demo\Payment\Controllers\OrderController::getForm',
+        '/demo-request-form' => 'Phwoolcon\Demo\Payment\Controllers\OrderController::getDemoRequestForm',
     ],
     'POST' => [
-        '/order/place' => 'Payment\Controllers\OrderController::postPlace',
+        '/order/place' => 'Phwoolcon\Demo\Payment\Controllers\OrderController::postPlace',
     ],
 ])->prefix('/catalog', [
     'GET' => [
