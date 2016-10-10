@@ -53,18 +53,18 @@ upstream php7 {
 
 ## 5.2. 配置 nginx 入口
 ```bash
-vim /etc/nginx/sites-available/auth.offerplus.org
+vim /etc/nginx/sites-available/yoursite.dev
 ```
 
 ```conf
 server {
     listen 80;
-    server_name     auth.offerplus.org pay.offerplus.org;
-    root /srv/http/auth.offerplus.org/public;
+    server_name     yoursite.dev;
+    root /srv/http/yoursite.dev/public;
     index  index.php index.html index.htm;
 
-    access_log /var/log/nginx/auth.offerplus.org_access.log;
-    error_log /var/log/nginx/auth.offerplus.org_error.log;
+    access_log /var/log/nginx/yoursite.dev_access.log;
+    error_log /var/log/nginx/yoursite.dev_error.log;
         
     location / {
         try_files $uri $uri/ /index.php?$query_string;
@@ -95,7 +95,7 @@ server {
 
 ## 5.3. 启用新入口
 ```bash
-ln -s /etc/nginx/sites-available/auth.offerplus.org /etc/nginx/sites-enabled/auth.offerplus.org
+ln -s /etc/nginx/sites-available/yoursite.dev /etc/nginx/sites-enabled/yoursite.dev
 nginx -t
 nginx -s reload
 ```
@@ -103,12 +103,12 @@ nginx -s reload
 ## 6. 安装 phwoolcon 框架
 ```bash
 cd /srv/http
-composer create-project phwoolcon/bootstrap:dev-master auth.offerplus.org
+composer create-project phwoolcon/bootstrap:dev-master yoursite.dev
 ```
 
 ## 7. 安装 phwoolcon/demo 模块
 ```bash
-cd auth.offerplus.org
+cd yoursite.dev
 vim composer.local.json
 ```
 
@@ -145,12 +145,12 @@ vim app/config/production/app.php
 <?php
 return [
     'debug' => false,
-    'name' => 'Offer Plus',
+    'name' => 'Your Site',
     'version' => '1.0.x-dev',
     'cache_config' => true,
     'enable_https' => false,
     'timezone' => 'Asia/Shanghai',
-    'url' => 'http://auth.offerplus.org',
+    'url' => 'http://yoursite.dev',
     'log' => [
         'adapter' => 'file',
         'file' => 'phwoolcon.log',
