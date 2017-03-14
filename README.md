@@ -111,19 +111,8 @@ composer create-project phwoolcon/bootstrap:dev-master yoursite.dev
 ## 7. Install phwoolcon/demo
 ```bash
 cd yoursite.dev
-vim composer.local.json
-```
-
-```json
-{
-    "require": {
-        "phwoolcon/demo": "~1.0"
-    }
-}
-```
-
-```bash
-composer up
+bin/import-package phwoolcon/demo
+composer update
 ```
 
 ## 8. Install MySQL

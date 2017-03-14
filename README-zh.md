@@ -109,19 +109,8 @@ composer create-project phwoolcon/bootstrap:dev-master yoursite.dev
 ## 7. 安装 phwoolcon/demo 模块
 ```bash
 cd yoursite.dev
-vim composer.local.json
-```
-
-```json
-{
-    "require": {
-        "phwoolcon/demo": "~1.0"
-    }
-}
-```
-
-```bash
-composer up
+bin/import-package phwoolcon/demo
+composer update
 ```
 
 ## 8. 安装数据库
