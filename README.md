@@ -7,7 +7,7 @@ Let's take the installation on Ubuntu as an example.
 ```bash
 add-apt-repository ppa:ondrej/php
 apt-get update
-apt-get install php7.0-fpm php7.0-gd php7.0-cli php7.0-curl php7.0-dev php7.0-json php7.0-mbstring php7.0-mcrypt php7.0-mysql php7.0-xml php7.0-zip
+apt-get install php7.0-fpm php7.0-gd php7.0-cli php7.0-curl php7.0-dev php7.0-json php7.0-mbstring php7.0-mcrypt php7.0-mysql php7.0-xml php7.0-zip php-redis
 ```
 
 ## 2. Install phalcon
@@ -39,7 +39,11 @@ chmod +x /usr/bin/composer
 ```
 
 ## 5. Install nginx
-(Omitted)
+```bash
+add-apt-repository ppa:nginx/stable
+apt-get update
+apt-get install nginx
+```
 
 ## 5.1. Add nginx upstream php7
 ```bash
@@ -65,23 +69,21 @@ server {
     root /srv/http/yoursite.dev/public;
     index  index.php index.html index.htm;
 
-    access_log /var/log/nginx/yoursite.dev_access.log;
+    access_log off;
     error_log /var/log/nginx/yoursite.dev_error.log;
-        
+
     location / {
         try_files $uri $uri/ /index.php?$query_string;
     }
 
     location ~ \.php$ {
-        include fastcgi_params;
-        try_files $uri =404;
-        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        include snippets/fastcgi-php.conf;
         fastcgi_pass php7;
-        fastcgi_index index.php;
-        fastcgi_param REDIRECT_STATUS 200;
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        access_log /var/log/nginx/yoursite.dev_access.log;
         fastcgi_param USE_SERVICE 1;
     }
+
+    location ~ /^\. { deny all; }
 
     location ~* \.(js|css|swf|eot|ttf|otf|woff|woff2)$ {
         add_header 'Cache-Control' 'public';
@@ -105,7 +107,7 @@ nginx -s reload
 ## 6. Install Phwoolcon framework
 ```bash
 cd /srv/http
-composer create-project phwoolcon/bootstrap:dev-master yoursite.dev
+git clone git@github.com:phwoolcon/bootstrap.git yoursite.dev
 ```
 
 ## 7. Install phwoolcon/demo
@@ -128,26 +130,6 @@ GRANT ALL PRIVILEGES ON your_db_name.*  To 'your_db_user'@'%' IDENTIFIED BY 'you
 ```
 
 ## 9. Modify project configurations
-```bash
-vim app/config/production/app.php
-```
-
-```php
-<?php
-return [
-    'debug' => false,
-    'name' => 'Your Site',
-    'version' => '1.0.x-dev',
-    'cache_config' => true,
-    'enable_https' => false,
-    'timezone' => 'Asia/Shanghai',
-    'url' => 'http://yoursite.dev',
-    'log' => [
-        'adapter' => 'file',
-        'file' => 'phwoolcon.log',
-    ],
-];
-```
 
 ```bash
 vim app/config/production/database.php
@@ -159,23 +141,14 @@ return [
     'default' => 'mysql',
     'connections' => [
         'mysql' => [
-            'adapter'    => 'Phwoolcon\Db\Adapter\Pdo\Mysql',
-            'host'       => 'localhost',
-            'dbname'     => 'your_db_name',
-            'username'   => 'your_db_user',
-            'password'   => 'your_db_pass',
-            'charset'    => 'utf8mb4',
-            'default_table_charset' => 'utf8_unicode_ci',
-            'options'    => [
-                PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES "utf8mb4" COLLATE "utf8mb4_unicode_ci"',
-            ],
-            'persistent' => false,
+            'host'       => '127.0.0.1',    // Use real server
+            'username'   => 'your_db_user', // Use real username
+            'password'   => 'your_db_pass', // Use real password
+            'dbname'     => 'your_db_name', // Use real db name
         ],
-
     ],
     'distributed' => [
         'node_id' => '001',
-        'start_time' => 1362931200,
     ],
     'query_log' => false,
 ];
@@ -206,6 +179,7 @@ ALI_PUBLIC_KEY_HERE
 
 ## 10. Install project DB stuff
 ```bash
+bin/dump-autoload
 bin/cli migrate:up
-bin/cli clear:cache
+bin/dump-autoload
 ```
