@@ -6,7 +6,7 @@ $quote = View::getParam('quote');
 <h1><?= fnGet($quote, 'brief_description') ?></h1>
 <h2><?= price(fnGet($quote, 'amount')) ?></h2>
 <h3><?= __('Select payment method'); ?></h3>
-<form method="post" action="<?= url('pay/order/place', null, true) ?>" enctype="application/x-www-form-urlencoded">
+<form method="post" action="<?= secureUrl('pay/order/place') ?>" enctype="application/x-www-form-urlencoded">
     <?php foreach (View::getParam('gateways', []) as $gatewayName => $gateway) { ?>
         <?php foreach (fnGet($gateway, 'methods', []) as $methodName => $method) { ?>
             <div class="payment-method payment-method-<?= $gatewayName ?>-<?= $methodName ?>">
