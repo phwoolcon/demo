@@ -1,0 +1,11 @@
+{
+    "require": {
+        "phwoolcon/demo": "~1.0"
+    },
+    "phwoolcon-packages": [
+        {
+            "name": "phwoolcon/demo",
+            "url": "git@github.com:phwoolcon/demo.git"
+        }
+    ]
+}

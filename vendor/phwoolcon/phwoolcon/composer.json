@@ -1,0 +1,53 @@
+{
+    "name": "phwoolcon/phwoolcon",
+    "description": "Phalcon + Swoole",
+    "keywords": ["phwoolcon", "phalcon", "swoole"],
+    "type": "library",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Christopher CHEN",
+            "email": "fishdrowned@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": ">=5.5.0",
+        "ext-curl": "*",
+        "ext-json": "*",
+        "ext-mcrypt": "*",
+        "ext-openssl": "*",
+        "ext-PDO": "*",
+        "ext-mbstring": "*",
+        "ext-phalcon": "~3.0",
+        "phwoolcon/fsm": "~1.0",
+        "symfony/console": "~3.0.0",
+        "pda/pheanstalk": "~3.1.0",
+        "swiftmailer/swiftmailer": "~5.4.2",
+        "opis/closure": "~2.3.0"
+    },
+    "suggest": {
+        "ext-swoole": "~1.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "Phwoolcon\\": "src",
+            "Phwoolcon\\Tests\\": "tests"
+        },
+        "exclude-from-classmap": [
+            "/tests/"
+        ],
+        "files": ["functions.php"]
+    },
+    "bin": [
+        "bin/update-phwoolcon-package-resource",
+        "bin/generate-phpdoc",
+        "phwoolcon-package/phwoolcon-package-phwoolcon.php"
+    ],
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
+}

@@ -1,0 +1,45 @@
+language: php
+sudo: required
+
+services:
+  - mysql
+
+php:
+  - '5.5'
+  - '5.6'
+  - '7.0'
+
+matrix:
+  fast_finish: true
+  allow_failures:
+    - php: '7.0'
+
+mysql:
+  database: phwoolcon_payment_test
+  username: travis
+  encoding: utf8mb4
+
+cache:
+  directories:
+    - vendor
+    - $HOME/.composer/cache
+    - $HOME/cphalcon
+
+before_install:
+  - sudo apt-get update -qq
+  - bin/ci-install-phalcon
+  - composer install --prefer-source --no-interaction
+
+before_script:
+  - composer self-update
+  - composer update --no-interaction --prefer-source
+  - mysql -uroot -e 'CREATE DATABASE `phwoolcon_payment_test` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci */;'
+  - pear install PHP_CodeSniffer
+  - phpenv rehash
+
+script:
+  - phpcs
+  - phpunit --verbose --coverage-clover=coverage.xml
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

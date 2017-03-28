@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+cd "$(dirname "$( dirname "${BASH_SOURCE[0]}" )")"
+
+function error {
+    echo $1
+    exit 1
+}
+
+if [ -d ".git" ]; then
+    echo "> git pull"
+    git pull || error "Error $? while updating bootstrap"
+fi
+
+echo "> composer update"
+composer update || error "Error $? while updating composer packages"
+echo "> bin/cli migrate:up"
+bin/cli migrate:up || error "Error while running migrations"
+echo "> bin/dump-autoload"
+bin/dump-autoload || error "Error while dumping autoload"
+
+if [ -d "ignore/release/.git" ]; then
+    echo "Fetch upstream"
+    cd ignore/release
+    git fetch
+    git reset --hard FETCH_HEAD --
+    cd ../..
+fi
+
+echo "Clean release directory"
+rm -rf ignore/release/*
+
+echo "Building ..."
+rsync -au --delete --exclude=.gitignore.dist --exclude=.gitignore --exclude-from=./deployignore ./ ./ignore/release/
+cp .gitignore.dist ./ignore/release/.gitignore
+echo "Release built successfully"
+
+if [ -d "ignore/release/.git" ]; then
+    cd ignore/release
+    git add ./
+    echo "New files added to git"
+    echo "Local changes:"
+    echo
+    git status
+    cd ../..
+fi

@@ -1,0 +1,10 @@
+<?php
+/* @var Phwoolcon\View\Engine\Php $this */
+?>
+<noscript><style>.js-only{display:none;}</style></noscript>
+<script>phwoolconOptions=<?= json_encode(View::getPhwoolconJsOptions()); ?>;</script>
+<?= View::generateHeadCss(); ?>
+<?= View::generateHeadJs(); ?>
+<!--[if IE]>
+<?= View::generateIeHack(); ?>
+<![endif]-->

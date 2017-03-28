@@ -1,0 +1,479 @@
+#!/usr/bin/env php
+<?php
+/**
+ * This file will be copied into directory "vendor/bin" after installation
+ */
+
+use Phalcon\Text;
+use Phalcon\Version;
+use Phwoolcon\Cache;
+use Phwoolcon\Config;
+use Phwoolcon\Db;
+use Phwoolcon\DiFix;
+use Phwoolcon\Events;
+
+error_reporting(-1);
+
+$baseDir = dirname(dirname(__DIR__));
+if (!is_dir($baseDir . '/vendor/phwoolcon')) {
+    $baseDir = $_SERVER['PWD'];
+}
+$vendorDir = $baseDir . '/vendor';
+
+ob_start();
+try {
+    include $baseDir . '/bootstrap/start.php';
+    $firstRun = !is_file($_SERVER['PHWOOLCON_CONFIG_PATH'] . '/app.php');
+} catch (Exception $e) {
+    $firstRun = true;
+}
+ob_end_clean();
+
+if ($firstRun) {
+    $viewPath = $baseDir . '/app/views/';
+    $assetsBasePath = $baseDir . '/public';
+    $assetsDir = 'assets';
+    $assetsCompiledDir = 'static';
+    $localePath = $baseDir . '/app/locale';
+    $migrationPath = $baseDir . '/bin/migrations';
+    if (!function_exists('fileSaveInclude')) {
+        include $baseDir . '/vendor/phwoolcon/phwoolcon/functions.php';
+    }
+    $cachePath = $baseDir . '/storage/cache';
+    is_dir($cachePath) or mkdir($cachePath, 0755, true);
+} else {
+    $_SERVER['PHWOOLCON_PHALCON_VERSION'] = Version::getId();
+    Events::register($di);
+    DiFix::register($di);
+    Db::register($di);
+    Cache::register($di);
+    Config::register($di);
+    $viewPath = Config::get('view.path', $baseDir . '/app/views/');
+    $assetsBasePath = Config::get('view.options.assets_options.base_path', $baseDir . '/public');
+    $assetsDir = Config::get('view.options.assets_options.assets_dir', 'assets');
+    $assetsCompiledDir = Config::get('view.options.assets_options.compiled_dir', 'static');
+    $localePath = Config::get('i18n.locale_path', $baseDir . '/app/locale');
+    $migrationPath = migrationPath();
+}
+
+$configPath = $_SERVER['PHWOOLCON_CONFIG_PATH'];
+$assetsPath = $assetsBasePath . '/' . $assetsDir;
+$assetsCompiledPath = $assetsBasePath . '/' . $assetsCompiledDir;
+is_dir($configPath) or mkdir($configPath, 0755, true);
+is_dir($assetsPath) or mkdir($assetsPath, 0755, true);
+
+$packages = [];
+$packageFiles = glob($vendorDir . '/bin/phwoolcon-package-*.php');
+
+$diFiles = [];
+$routeFiles = [];
+$commands = [];
+$aliases = [];
+$assetsGroups = [];
+$adminAssetsGroups = [];
+if (is_file($migrationCandidatesFile = $vendorDir . '/phwoolcon/migrations.php')) {
+    $migrationCandidates = include $migrationCandidatesFile;
+}
+$migrationCandidates['candidates'] = [];
+clearConfigFiles($configPath);
+clearFolders([
+    'Assets' => $assetsPath,
+    'Compiled assets' => $assetsCompiledPath,
+    'Locales' => $localePath,
+    'Migrations' => $migrationPath,
+    'Views' => $viewPath,
+]);
+echo PHP_EOL;
+
+foreach ($packageFiles as $file) {
+    if (!is_array($package = include($file))) {
+        continue;
+    }
+    foreach ($package as $name => $resources) {
+        $path = $vendorDir . '/' . $name;
+        installConfig($name, $path, $configPath);
+        installViews($name, $path, $viewPath);
+        installAssets($name, $path, $assetsPath);
+        installLocale($name, $path, $localePath . '/');
+        installMigrations($name, $path, $migrationPath . '/');
+        if (is_dir($packageMigrationPath = $path . '/phwoolcon-package/migrations')) {
+            $migrationCandidates['candidates'][$name] = $packageMigrationPath;
+        }
+        foreach ($resources as $type => $value) {
+            switch ($type) {
+                case 'di':
+                    installDi($name, $path, $value, $diFiles);
+                    break;
+                case 'routes':
+                    installRoutes($name, $path, $value, $routeFiles);
+                    break;
+                case 'commands':
+                    if (is_array($value)) {
+                        foreach ($value as $sort => $detectedCommands) {
+                            $commands[$sort . '-' . $name] = $detectedCommands;
+                        }
+                        echo sprintf('[%s]%s Commands installed', $name, spacePad($name)), PHP_EOL;
+                    }
+                    break;
+                case 'class_aliases':
+                    if (is_array($value)) {
+                        foreach ($value as $sort => $detectedAliases) {
+                            $aliases[$sort . '-' . $name] = $detectedAliases;
+                        }
+                        echo sprintf('[%s]%s Class aliases registered', $name, spacePad($name)), PHP_EOL;
+                    }
+                    break;
+                case 'assets':
+                    if (is_array($value)) {
+                        $assetsGroups = array_merge_recursive($assetsGroups, $value);
+                        echo sprintf('[%s]%s Assets groups registered', $name, spacePad($name)), PHP_EOL;
+                    }
+                    break;
+                case 'admin_assets':
+                    if (is_array($value)) {
+                        $adminAssetsGroups = array_merge_recursive($adminAssetsGroups, $value);
+                        echo sprintf('[%s]%s Admin assets groups registered', $name, spacePad($name)), PHP_EOL;
+                    }
+                    break;
+            }
+        }
+    }
+}
+writeDi($diFiles);
+writeRoutes($routeFiles);
+writeCommands($commands);
+writeAliases($aliases);
+writeMigrationCandidates($migrationCandidates);
+writeAssetsGroups($assetsGroups);
+writeAdminAssetsGroups($adminAssetsGroups);
+echo PHP_EOL;
+
+generateModelTraits();
+
+try {
+    if (!$firstRun) {
+        spl_autoload_register(function ($class) {
+            throw new Exception("Class '{$class}' not found");
+        });
+        include $GLOBALS['vendorDir'] . '/phwoolcon/di.php';
+    }
+} catch (Exception $e) {
+}
+generateIdeHelper();
+
+function generateIdeHelper()
+{
+    $ideHelperContent = '<?php' . PHP_EOL;
+    $classAliases = include $GLOBALS['vendorDir'] . '/phwoolcon/class_aliases.php';
+    ksort($classAliases);
+    foreach ($classAliases as $alias => $class) {
+        $classContent = '';
+        try {
+            $classContent = method_exists($class, $method = 'ideHelperGenerator') ? $class::{$method}() : '';
+        } catch (Exception $e) {
+        }
+        $ideHelperContent .= "
+class {$alias} extends {$class}
+{
+{$classContent}
+}
+";
+    }
+    $ideHelperPath = $GLOBALS['baseDir'] . '/ignore';
+    $ideHelperFile = $ideHelperPath . '/_ide_helper.php';
+    is_dir($ideHelperPath) or mkdir($ideHelperPath, 0755, true);
+    file_put_contents($ideHelperFile, $ideHelperContent);
+    echo 'IDE helper generated', PHP_EOL;
+}
+
+function generateModelTraits()
+{
+    try {
+        if ($GLOBALS['firstRun'] || !Config::get('database.default')) {
+            return;
+        }
+        $traitTemplate = <<<'TRAIT'
+trait TraitName
+{
+    // protected $_table = 'table_name';
+
+properties
+methods
+}
+
+TRAIT;
+        $propertiesTemplate = <<<'PROPERTY'
+    public $property;
+PROPERTY;
+        $methodsTemplate = <<<'METHOD'
+
+    public function getMethod()
+    {
+        return $this->property;
+    }
+
+    public function setMethod($value)
+    {
+        $this->property = $value;
+        return $this;
+    }
+METHOD;
+        $findMethodsTemplate = <<<'FIND'
+
+    /**
+     * @param $value
+     * @return static[]|\Phalcon\Mvc\Model\Resultset\Simple
+     */
+    public static function findByMethod($value)
+    {
+        return static::findSimple([
+            'property' => $value,
+        ]);
+    }
+
+    /**
+     * @param $value
+     * @return static|false
+     */
+    public static function findFirstByMethod($value)
+    {
+        return static::findFirstSimple([
+            'property' => $value,
+        ]);
+    }
+FIND;
+
+        $traits = [];
+        $db = Db::connection();
+        foreach ($db->listTables() as $table) {
+            $traitName = Text::camelize($table) . 'ModelTrait';
+            $properties = [];
+            $methods = [];
+            /* @var \Phalcon\Db\Index $index */
+            $indexedProperties = [];
+            foreach ($db->describeIndexes($table) as $index) {
+                $columns = $index->getColumns();
+                $firstColumn = reset($columns);
+                $indexedProperties[$firstColumn] = $firstColumn;
+            }
+            /* @var \Phalcon\Db\Column $column */
+            foreach ($db->describeColumns($table) as $column) {
+                $propertyName = $column->getName();
+                $properties[] = str_replace('property', $propertyName, $propertiesTemplate);
+                $methods[] = str_replace($methodsSearch = [
+                    'Method',
+                    'property',
+                    'value',
+                ], $methodsReplacement = [
+                    $methodName = Text::camelize($propertyName),
+                    $propertyName,
+                    lcfirst($methodName),
+                ], $methodsTemplate);
+
+                if (isset($indexedProperties[$propertyName])) {
+                    $methods[] = str_replace($methodsSearch, $methodsReplacement, $findMethodsTemplate);
+                }
+            }
+            $traits[] = str_replace([
+                'table_name',
+                'TraitName',
+                'properties',
+                'methods',
+            ], [
+                $table,
+                $traitName,
+                implode(PHP_EOL, $properties),
+                implode(PHP_EOL, $methods),
+            ], $traitTemplate);
+        }
+        $content = <<<'CONTENT'
+if (defined('PHWOOLCON_MODELS_TRAIT_LOADED')) {
+    return;
+}
+define('PHWOOLCON_MODELS_TRAIT_LOADED', true);
+
+
+CONTENT;
+
+        $content .= implode(PHP_EOL, $traits);
+        $target = $GLOBALS['vendorDir'] . '/phwoolcon/model_traits.php';
+        file_put_contents($target, '<?php' . PHP_EOL . $content);
+        echo 'Dynamic model traits generated', PHP_EOL;
+    } catch (Exception $e) {
+        return;
+    }
+}
+
+function installConfig($package, $path, $configPath)
+{
+    $installed = false;
+    if ($files = glob($path . '/phwoolcon-package/config/*.php')) {
+        foreach ($files as $source) {
+            $file = basename($source);
+            $destination = $configPath . '/' . $file;
+            is_file($destination) and unlink($destination);
+            symlinkRelative($source, $destination);
+        }
+        $installed = true;
+    }
+
+    if ($overrides = glob($path . '/phwoolcon-package/config/override-*/*.php')) {
+        foreach ($overrides as $override) {
+            $file = basename($override);
+            $dir = basename(dirname($override));
+            $destination = $configPath . '/' . $dir . '/' . $file;
+            is_file($destination) and unlink($destination);
+            symlinkRelative($override, $destination);
+        }
+        $installed = true;
+    }
+    if ($installed) {
+        echo sprintf('[%s]%s Config files installed', $package, spacePad($package)), PHP_EOL;
+    }
+}
+
+function installViews($package, $path, $viewPath)
+{
+    if ($items = glob($path . '/phwoolcon-package/views/*')) {
+        foreach ($items as $source) {
+            $destination = $viewPath . basename($source);
+            symlinkDirOverride($source, $destination);
+        }
+        echo sprintf('[%s]%s Views updated', $package, spacePad($package)), PHP_EOL;
+    }
+}
+
+function installAssets($package, $path, $assetsPath)
+{
+    if ($items = glob($path . '/phwoolcon-package/assets/*')) {
+        foreach ($items as $source) {
+            $destination = $assetsPath . '/' . basename($source);
+            symlinkDirOverride($source, $destination);
+        }
+        echo sprintf('[%s]%s Assets updated', $package, spacePad($package)), PHP_EOL;
+    }
+}
+
+function installLocale($package, $path, $viewPath)
+{
+    if ($items = glob($path . '/phwoolcon-package/locale/*')) {
+        foreach ($items as $source) {
+            $destination = $viewPath . basename($source);
+            symlinkDirOverride($source, $destination);
+        }
+        echo sprintf('[%s]%s Locale updated', $package, spacePad($package)), PHP_EOL;
+    }
+}
+
+function installMigrations($package, $path, $migrationPath)
+{
+    if ($items = glob($path . '/phwoolcon-package/migrations/*')) {
+        foreach ($items as $source) {
+            $destination = $migrationPath . basename($source);
+            is_file($destination) and unlink($destination);
+            symlinkRelative($source, $destination);
+        }
+        echo sprintf('[%s]%s Migrations updated', $package, spacePad($package)), PHP_EOL;
+    }
+}
+
+function installDi($package, $path, $file, &$diFiles = [], $sort = null)
+{
+    if (is_array($file)) {
+        foreach ($file as $realSort => $realFile) {
+            installDi($package, $path, $realFile, $diFiles, $realSort);
+        }
+        return;
+    }
+    echo sprintf('[%s]%s DI registered', $package, spacePad($package)), PHP_EOL;
+    $diFiles[$sort][] = $path . '/phwoolcon-package/' . $file;
+}
+
+function installRoutes($package, $path, $file, &$routeFiles = [], $sort = null)
+{
+    if (is_array($file)) {
+        foreach ($file as $realSort => $realFile) {
+            installRoutes($package, $path, $realFile, $routeFiles, $realSort);
+        }
+        return;
+    }
+    echo sprintf('[%s]%s Routes registered', $package, spacePad($package)), PHP_EOL;
+    $routeFiles[$sort][] = $path . '/phwoolcon-package/' . $file;
+}
+
+function clearConfigFiles($configPath)
+{
+    if ($files = glob($configPath . '/*.php')) {
+        foreach ($files as $file) {
+            unlink($file);
+        }
+    }
+    if ($overrideDirs = glob($configPath . '/override-*/')) {
+        foreach ($overrideDirs as $overrideDir) {
+            removeDir($overrideDir);
+        }
+    }
+    $label = 'Config';
+    echo sprintf('[%s]%s files cleared', $label, spacePad($label, 16)), PHP_EOL;
+}
+
+function clearFolders(array $folders)
+{
+    foreach ($folders as $label => $path) {
+        removeDir($path);
+        mkdir($path, 0755, true);
+        touch($path . '/.gitkeep');
+        echo sprintf('[%s]%s folder cleared', $label, spacePad($label, 16)), PHP_EOL;
+    }
+}
+
+function writeDi($diFiles)
+{
+    $target = $GLOBALS['vendorDir'] . '/phwoolcon/di.php';
+    fileSaveInclude($target, arraySortedMerge($diFiles));
+}
+
+function writeRoutes($routeFiles)
+{
+    $target = $GLOBALS['vendorDir'] . '/phwoolcon/routes.php';
+    fileSaveInclude($target, arraySortedMerge($routeFiles));
+}
+
+function writeCommands($commands)
+{
+    $target = $GLOBALS['vendorDir'] . '/phwoolcon/commands.php';
+    fileSaveArray($target, arraySortedMerge($commands));
+}
+
+function writeAliases($aliases)
+{
+    $target = $GLOBALS['vendorDir'] . '/phwoolcon/class_aliases.php';
+    fileSaveArray($target, arraySortedMerge($aliases));
+}
+
+function writeMigrationCandidates($migrationCandidates)
+{
+    $target = $GLOBALS['vendorDir'] . '/phwoolcon/migrations.php';
+    fileSaveArray($target, $migrationCandidates, function ($content) {
+        global $baseDir;
+        return str_replace("'{$baseDir}", "ROOT_PATH . '", $content);
+    });
+}
+
+function writeAssetsGroups($assetsGroups)
+{
+    $target = $GLOBALS['vendorDir'] . '/phwoolcon/assets.php';
+    fileSaveArray($target, $assetsGroups);
+}
+
+function writeAdminAssetsGroups($assetsGroups)
+{
+    $target = $GLOBALS['vendorDir'] . '/phwoolcon/admin_assets.php';
+    fileSaveArray($target, $assetsGroups);
+}
+
+function spacePad($str, $length = 20)
+{
+    $spaces = $length - strlen($str);
+    return $spaces > 0 ? str_repeat(' ', $spaces) : ' ';
+}

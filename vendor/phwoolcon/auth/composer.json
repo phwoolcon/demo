@@ -1,0 +1,29 @@
+{
+    "name": "phwoolcon/auth",
+    "description": "Auth module for Phwoolcon",
+    "keywords": ["phwoolcon", "auth", "phalcon", "swoole"],
+    "type": "library",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Christopher CHEN",
+            "email": "fishdrowned@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.5.0",
+        "phwoolcon/phwoolcon": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {"Phwoolcon\\Auth\\": "src"}
+    },
+    "bin": [
+        "phwoolcon-package/phwoolcon-package-auth.php"
+    ],
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
+}

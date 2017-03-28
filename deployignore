@@ -1,0 +1,11 @@
+.git
+.idea/
+/app/config
+/app/views
+/app/locale
+/bin/migrations
+/ignore
+/public/*/
+/storage
+/vendor/*/*/vendor/
+tests/root/storage/
