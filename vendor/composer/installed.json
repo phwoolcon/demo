@@ -392,12 +392,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/phwoolcon/phwoolcon.git",
-            "reference": "edec1a317085a18aa7e07a3c911c588e80b6c959"
+            "reference": "df3f4df213b37ce6e0b88bb1d501984a994273e4"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/phwoolcon/phwoolcon/zipball/edec1a317085a18aa7e07a3c911c588e80b6c959",
-            "reference": "edec1a317085a18aa7e07a3c911c588e80b6c959",
+            "url": "https://api.github.com/repos/phwoolcon/phwoolcon/zipball/df3f4df213b37ce6e0b88bb1d501984a994273e4",
+            "reference": "df3f4df213b37ce6e0b88bb1d501984a994273e4",
             "shasum": ""
         },
         "require": {
@@ -418,7 +418,7 @@
         "suggest": {
             "ext-swoole": "~1.8"
         },
-        "time": "2017-03-27T06:34:52+00:00",
+        "time": "2017-03-28T10:04:43+00:00",
         "bin": [
             "bin/update-phwoolcon-package-resource",
             "bin/generate-phpdoc",
@@ -467,12 +467,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/phwoolcon/payment.git",
-            "reference": "fe5cc772fcc816b449c0823f07bac134b7799881"
+            "reference": "f8b0fdc4d6c8ca84edc6dc243b6027eff67f4fea"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/phwoolcon/payment/zipball/fe5cc772fcc816b449c0823f07bac134b7799881",
-            "reference": "fe5cc772fcc816b449c0823f07bac134b7799881",
+            "url": "https://api.github.com/repos/phwoolcon/payment/zipball/f8b0fdc4d6c8ca84edc6dc243b6027eff67f4fea",
+            "reference": "f8b0fdc4d6c8ca84edc6dc243b6027eff67f4fea",
             "shasum": ""
         },
         "require": {
@@ -482,7 +482,7 @@
         "require-dev": {
             "techpivot/phalcon-ci-installer": "~1.0"
         },
-        "time": "2017-03-15T08:14:49+00:00",
+        "time": "2017-03-28T10:02:00+00:00",
         "bin": [
             "phwoolcon-package/phwoolcon-package-payment.php"
         ],
@@ -492,7 +492,7 @@
                 "dev-master": "1.0.x-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-4": {
                 "Phwoolcon\\Payment\\": "src",
@@ -580,12 +580,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/phwoolcon/demo.git",
-            "reference": "40796ed4dfd61975cec2215d6eae8ee9875ec0da"
+            "reference": "d4378a5798db36082b7bb21419045de50e6f591d"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/phwoolcon/demo/zipball/40796ed4dfd61975cec2215d6eae8ee9875ec0da",
-            "reference": "40796ed4dfd61975cec2215d6eae8ee9875ec0da",
+            "url": "https://api.github.com/repos/phwoolcon/demo/zipball/d4378a5798db36082b7bb21419045de50e6f591d",
+            "reference": "d4378a5798db36082b7bb21419045de50e6f591d",
             "shasum": ""
         },
         "require": {
@@ -597,7 +597,7 @@
         "require-dev": {
             "techpivot/phalcon-ci-installer": "~1.0"
         },
-        "time": "2017-03-15T08:13:32+00:00",
+        "time": "2017-03-28T10:03:21+00:00",
         "bin": [
             "phwoolcon-package/phwoolcon-package-demo.php"
         ],
