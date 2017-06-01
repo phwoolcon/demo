@@ -55,6 +55,11 @@ vim /etc/nginx/sites-available/yoursite.dev
 ```
 
 ```conf
+map $http_x_forwarded_proto $frontend_https {
+    default '';
+    https on;
+}
+
 server {
     listen 80;
     server_name     yoursite.dev;
@@ -73,6 +78,7 @@ server {
         fastcgi_pass php7;
         access_log /var/log/nginx/yoursite.dev_access.log;
         fastcgi_param USE_SERVICE 1;
+        fastcgi_param HTTPS $frontend_https;
     }
 
     location ~ /^\. { deny all; }
