@@ -6,28 +6,20 @@ Let's take the installation on Ubuntu as an example.
 ## 1. Install php7
 ```bash
 add-apt-repository ppa:ondrej/php
-apt-get update
-apt-get install php7.0-fpm php7.0-gd php7.0-cli php7.0-curl php7.0-dev php7.0-json php7.0-mbstring php7.0-mcrypt php7.0-mysql php7.0-xml php7.0-zip php-redis
+apt update
+apt install php7.0-fpm php7.0-gd php7.0-cli php7.0-curl php7.0-dev php7.0-json php7.0-mbstring php7.0-mcrypt php7.0-mysql php7.0-xml php7.0-zip php-redis
 ```
 
 ## 2. Install phalcon
 ```bash
 curl -s https://packagecloud.io/install/repositories/phalcon/stable/script.deb.sh | bash
-apt-get install php7.0-phalcon
+apt install php7.0-phalcon
 ```
 
 ## 3. Install swoole
 ```bash
 pecl install swoole
-vim /etc/php/7.0/mods-available/swoole.ini
-```
-
-```ini
-[swoole]
-extension = swoole.so
-```
-
-```bash
+echo 'extension = swoole.so' > /etc/php/7.0/mods-available/swoole.ini
 ln -s /etc/php/7.0/mods-available/swoole.ini /etc/php/7.0/cli/conf.d/20-swoole.ini
 ln -s /etc/php/7.0/mods-available/swoole.ini /etc/php/7.0/fpm/conf.d/20-swoole.ini
 ```
@@ -41,8 +33,8 @@ chmod +x /usr/bin/composer
 ## 5. Install nginx
 ```bash
 add-apt-repository ppa:nginx/stable
-apt-get update
-apt-get install nginx
+apt update
+apt install nginx
 ```
 
 ## 5.1. Add nginx upstream php7
@@ -119,7 +111,7 @@ composer update
 
 ## 8. Install MySQL
 ```bash
-apt-get install mysql-server-5.6 mysql-client-5.6
+apt install mysql-server-5.7 mysql-client-5.7
 ```
 
 ### 8.1. Create database and DB user

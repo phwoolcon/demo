@@ -167,12 +167,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phwoolcon/demo.git",
-                "reference": "d4378a5798db36082b7bb21419045de50e6f591d"
+                "reference": "e8e60b2d3a3aae4455db35c2dc1f532a18507991"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phwoolcon/demo/zipball/d4378a5798db36082b7bb21419045de50e6f591d",
-                "reference": "d4378a5798db36082b7bb21419045de50e6f591d",
+                "url": "https://files.phpcomposer.com/files/phwoolcon/demo/e8e60b2d3a3aae4455db35c2dc1f532a18507991.zip",
+                "reference": "e8e60b2d3a3aae4455db35c2dc1f532a18507991",
                 "shasum": ""
             },
             "require": {
@@ -219,7 +219,7 @@
                 "phwoolcon",
                 "swoole"
             ],
-            "time": "2017-03-28 10:03:21"
+            "time": "2017-05-10 04:34:59"
         },
         {
             "name": "phwoolcon/fsm",
@@ -273,12 +273,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phwoolcon/payment.git",
-                "reference": "f8b0fdc4d6c8ca84edc6dc243b6027eff67f4fea"
+                "reference": "3e35302c7493066678a8149461ab216cebb3b962"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phwoolcon/payment/zipball/f8b0fdc4d6c8ca84edc6dc243b6027eff67f4fea",
-                "reference": "f8b0fdc4d6c8ca84edc6dc243b6027eff67f4fea",
+                "url": "https://files.phpcomposer.com/files/phwoolcon/payment/3e35302c7493066678a8149461ab216cebb3b962.zip",
+                "reference": "3e35302c7493066678a8149461ab216cebb3b962",
                 "shasum": ""
             },
             "require": {
@@ -323,7 +323,7 @@
                 "phwoolcon",
                 "swoole"
             ],
-            "time": "2017-03-28 10:02:00"
+            "time": "2017-05-05 07:08:27"
         },
         {
             "name": "phwoolcon/phwoolcon",
@@ -331,12 +331,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phwoolcon/phwoolcon.git",
-                "reference": "df3f4df213b37ce6e0b88bb1d501984a994273e4"
+                "reference": "f51387b8ed705cf28a69451100ea44b2de3c7a10"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phwoolcon/phwoolcon/zipball/df3f4df213b37ce6e0b88bb1d501984a994273e4",
-                "reference": "df3f4df213b37ce6e0b88bb1d501984a994273e4",
+                "url": "https://files.phpcomposer.com/files/phwoolcon/phwoolcon/f51387b8ed705cf28a69451100ea44b2de3c7a10.zip",
+                "reference": "f51387b8ed705cf28a69451100ea44b2de3c7a10",
                 "shasum": ""
             },
             "require": {
@@ -396,20 +396,20 @@
                 "phwoolcon",
                 "swoole"
             ],
-            "time": "2017-03-28 10:04:43"
+            "time": "2017-06-01 06:25:40"
         },
         {
             "name": "swiftmailer/swiftmailer",
-            "version": "v5.4.6",
+            "version": "v5.4.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swiftmailer/swiftmailer.git",
-                "reference": "81fdccfaf8bdc5d5d7a1ef6bb3a61bbb1a6c4a3e"
+                "reference": "9a06dc570a0367850280eefd3f1dc2da45aef517"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/81fdccfaf8bdc5d5d7a1ef6bb3a61bbb1a6c4a3e",
-                "reference": "81fdccfaf8bdc5d5d7a1ef6bb3a61bbb1a6c4a3e",
+                "url": "https://files.phpcomposer.com/files/swiftmailer/swiftmailer/9a06dc570a0367850280eefd3f1dc2da45aef517.zip",
+                "reference": "9a06dc570a0367850280eefd3f1dc2da45aef517",
                 "shasum": ""
             },
             "require": {
@@ -450,7 +450,7 @@
                 "mail",
                 "mailer"
             ],
-            "time": "2017-02-13T07:52:53+00:00"
+            "time": "2017-05-01T15:54:03+00:00"
         },
         {
             "name": "symfony/console",
