@@ -29,9 +29,6 @@
             "/tests/"
         ]
     },
-    "bin": [
-        "phwoolcon-package/phwoolcon-package-demo.php"
-    ],
     "extra": {
         "branch-alias": {
             "dev-master": "1.0.x-dev"
