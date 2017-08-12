@@ -36,12 +36,10 @@ return [
                 new Column('created_at', [
                     'type' => Column::TYPE_TIMESTAMP,
                     'notNull' => false,
-                    'default' => 'CURRENT_TIMESTAMP',
                 ]),
                 new Column('updated_at', [
                     'type' => Column::TYPE_TIMESTAMP,
                     'notNull' => false,
-                    'default' => 'CURRENT_TIMESTAMP',
                 ]),
             ],
             'options' => [
