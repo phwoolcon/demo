@@ -7,7 +7,7 @@ Let's take the installation on Ubuntu as an example.
 ```bash
 add-apt-repository ppa:ondrej/php
 apt update
-apt install php7.0-fpm php7.0-gd php7.0-cli php7.0-curl php7.0-dev php7.0-json php7.0-mbstring php7.0-mcrypt php7.0-mysql php7.0-xml php7.0-zip php-redis
+apt install php7.0-fpm php7.0-gd php7.0-cli php7.0-curl php7.0-dev php7.0-json php7.0-mbstring php7.0-mysql php7.0-xml php7.0-zip php-redis
 ```
 
 ## 2. Install phalcon
